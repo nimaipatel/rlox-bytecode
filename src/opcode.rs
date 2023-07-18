@@ -2,6 +2,7 @@
 pub enum OpCode {
     Return,
     Constant,
+    ConstantLong,
 }
 
 impl From<u8> for OpCode {
