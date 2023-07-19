@@ -7,16 +7,16 @@ use crate::opcode::OpCode;
 use crate::value::Value;
 
 #[derive(Debug, PartialEq)]
-struct LineInfo {
+pub struct LineInfo {
     count: usize,
     number: usize,
 }
 
 #[derive(Default, Debug)]
 pub struct Chunk {
-    lines: Vec<LineInfo>,
-    code: Vec<u8>,
-    constants: Vec<Value>,
+    pub lines: Vec<LineInfo>,
+    pub code: Vec<u8>,
+    pub constants: Vec<Value>,
 }
 
 impl Chunk {
@@ -69,7 +69,7 @@ impl Chunk {
         }
     }
 
-    fn disassemble_instruction(&self, offset: usize) -> Option<usize> {
+    pub fn disassemble_instruction(&self, offset: usize) -> Option<usize> {
         print!("{:04} ", offset);
         if offset > 0 && self.get_line(offset) == self.get_line(offset - 1) {
             print!("   | ");
@@ -79,15 +79,11 @@ impl Chunk {
         if let Some(instruction) = self.code.get(offset) {
             let instruction: OpCode = (*instruction).into();
             match instruction {
-                OpCode::Return => {
-                    println!("{:16}", "OP_RETURN");
-                    Some(offset + 1)
-                }
                 OpCode::Constant => {
                     let constant_index = self.code[offset + 1];
                     println!(
                         "{:16} {constant_index} {:?}",
-                        "OP_CONSTANT", self.constants[constant_index as usize]
+                        instruction, self.constants[constant_index as usize]
                     );
                     Some(offset + 2)
                 }
@@ -98,9 +94,13 @@ impl Chunk {
                     let constant_index = u32::from_be_bytes([0, h, m, l]);
                     println!(
                         "{:16} {constant_index} {:?}",
-                        "OP_CONSTANT_LONG", self.constants[constant_index as usize]
+                        instruction, self.constants[constant_index as usize]
                     );
                     Some(offset + 4)
+                }
+                simple_instruction => {
+                    println!("{:16}", simple_instruction);
+                    Some(offset + 1)
                 }
             }
         } else {
