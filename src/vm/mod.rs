@@ -7,6 +7,8 @@ use crate::{chunk::Chunk, error::InterpretError, opcode::OpCode, value::Value};
 type Stack = Vec<Value>;
 type IP = usize;
 
+static STACK_UNDERFLOW: &'static str = "Tried poping from empty stack";
+
 #[derive(Debug)]
 pub struct VM<'a> {
     chunk: &'a Chunk,
@@ -78,8 +80,8 @@ impl<'a> VM<'a> {
                     let constant = Self::read_constant_long(self.chunk, &mut self.ip);
                 }
                 OpCode::Negate => {
-                    let poped = Self::pop_unsafe(&mut self.stack);
-                    self.stack.push(-poped);
+                    let last_ref = self.stack.last_mut().expect(STACK_UNDERFLOW);
+                    *last_ref = -*last_ref;
                 }
                 OpCode::Add => {
                     let (a, b) = Self::pop_twice_unsafe(&mut self.stack);
@@ -102,12 +104,12 @@ impl<'a> VM<'a> {
     }
 
     fn pop_unsafe(stack: &mut Stack) -> Value {
-        stack.pop().expect("Stack is empty")
+        stack.pop().expect(STACK_UNDERFLOW)
     }
 
     fn pop_twice_unsafe(stack: &mut Stack) -> (Value, Value) {
-        let b = stack.pop().expect("Stack is empty");
-        let a = stack.pop().expect("Stack is empty");
+        let b = stack.pop().expect(STACK_UNDERFLOW);
+        let a = stack.pop().expect(STACK_UNDERFLOW);
         (a, b)
     }
 }
