@@ -21,7 +21,7 @@ impl<'a> VM<'a> {
         Self {
             chunk,
             ip: 0,
-            stack: Vec::new(),
+            stack: Vec::with_capacity(256),
         }
     }
 
