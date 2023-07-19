@@ -1,3 +1,5 @@
+mod test;
+
 use std::borrow::BorrowMut;
 
 use crate::{chunk::Chunk, error::InterpretError, opcode::OpCode, value::Value};
@@ -49,7 +51,7 @@ impl<'a> VM<'a> {
         &chunk.constants[idx as usize]
     }
 
-    pub fn run(&mut self, debug: bool) -> Result<(), InterpretError> {
+    pub fn run(&mut self, debug: bool) -> Result<Value, InterpretError> {
         dbg!(&self.chunk.code.len());
         loop {
             if debug {
@@ -64,8 +66,9 @@ impl<'a> VM<'a> {
             let byte = Self::read_byte(self.chunk, &mut self.ip);
             match byte.into() {
                 OpCode::Return => {
-                    println!("{}", Self::pop_unsafe(&mut self.stack));
-                    return Ok(());
+                    let ret = Self::pop_unsafe(&mut self.stack);
+                    println!("{}", ret);
+                    return Ok(ret);
                 }
                 OpCode::Constant => {
                     let constant = Self::read_constant(self.chunk, &mut self.ip);
