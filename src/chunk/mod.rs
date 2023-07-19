@@ -6,15 +6,12 @@ use crate::chunk;
 use crate::opcode::OpCode;
 use crate::value::Value;
 
-#[derive(Debug, PartialEq)]
-pub struct LineInfo {
-    count: usize,
-    number: usize,
-}
+type LineCount = usize;
+type LineNumber = usize;
 
 #[derive(Default, Debug)]
 pub struct Chunk {
-    pub lines: Vec<LineInfo>,
+    pub lines: Vec<(LineCount, LineNumber)>,
     pub code: Vec<u8>,
     pub constants: Vec<Value>,
 }
@@ -22,17 +19,14 @@ pub struct Chunk {
 impl Chunk {
     pub fn write(&mut self, byte: u8, line_number: usize) {
         self.code.push(byte);
-        if let Some(last_line) = self.lines.last_mut() {
-            if last_line.number == line_number {
-                last_line.count += 1;
+        if let Some((last_line_count, last_line_number)) = self.lines.last_mut() {
+            if *last_line_number == line_number {
+                *last_line_count += 1;
                 return;
             }
         }
 
-        self.lines.push(LineInfo {
-            count: 1,
-            number: line_number,
-        })
+        self.lines.push((1, line_number))
     }
 
     pub fn write_constant(&mut self, value: Value, line_number: usize) {
@@ -52,10 +46,10 @@ impl Chunk {
 
     fn get_line(&self, offset: usize) -> usize {
         let mut cumulative_position = 0;
-        for line_chunk in self.lines.iter() {
-            cumulative_position += line_chunk.count;
+        for (line_count, line_number) in self.lines.iter() {
+            cumulative_position += line_count;
             if cumulative_position > offset {
-                return line_chunk.number;
+                return *line_number;
             }
         }
         0

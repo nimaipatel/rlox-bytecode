@@ -1,10 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use crate::{
-        chunk::{Chunk, LineInfo},
-        opcode::OpCode,
-        value::Value,
-    };
+    use crate::{chunk::Chunk, opcode::OpCode, value::Value};
 
     #[test]
     fn write_op_constant() {
@@ -35,31 +31,7 @@ mod tests {
         chunk.write_constant(1.2, 6);
         chunk.write(OpCode::Return as u8, 7);
 
-        assert_eq!(
-            chunk.lines,
-            vec![
-                LineInfo {
-                    count: 2,
-                    number: 1,
-                },
-                LineInfo {
-                    count: 5,
-                    number: 3,
-                },
-                LineInfo {
-                    count: 2,
-                    number: 5,
-                },
-                LineInfo {
-                    count: 3,
-                    number: 6,
-                },
-                LineInfo {
-                    count: 1,
-                    number: 7,
-                },
-            ]
-        );
+        assert_eq!(chunk.lines, vec![(2, 1), (5, 3), (2, 5), (3, 6), (1, 7),]);
     }
 
     #[test]
