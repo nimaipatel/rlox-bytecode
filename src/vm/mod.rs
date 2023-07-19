@@ -10,16 +10,16 @@ type IP = usize;
 static STACK_UNDERFLOW: &'static str = "Tried poping from empty stack";
 
 #[derive(Debug)]
-pub struct VM<'a> {
-    chunk: &'a Chunk,
+pub struct VM {
+    pub chunk: Chunk,
     ip: IP,
     stack: Stack,
 }
 
-impl<'a> VM<'a> {
-    pub fn new(chunk: &'a Chunk) -> Self {
+impl VM {
+    pub fn new() -> Self {
         Self {
-            chunk,
+            chunk: Chunk::default(),
             ip: 0,
             stack: Vec::with_capacity(256),
         }
@@ -41,21 +41,20 @@ impl<'a> VM<'a> {
     //     instruction
     // }
 
-    fn read_constant(chunk: &'a Chunk, ip: &mut IP) -> &'a Value {
-        &chunk.constants[Self::read_byte(chunk, ip) as usize]
+    fn read_constant(chunk: &Chunk, ip: &mut IP) -> Value {
+        chunk.constants[Self::read_byte(chunk, ip) as usize]
     }
 
-    fn read_constant_long(chunk: &'a Chunk, ip: &mut IP) -> &'a Value {
+    fn read_constant_long(chunk: &Chunk, ip: &mut IP) -> Value {
         let h = Self::read_byte(chunk, ip);
         let m = Self::read_byte(chunk, ip);
         let l = Self::read_byte(chunk, ip);
         let idx = u32::from_be_bytes([0, h, m, l]);
-        &chunk.constants[idx as usize]
+        chunk.constants[idx as usize]
     }
 
     pub fn run(&mut self, debug: bool) -> Result<Value, InterpretError> {
-        dbg!(&self.chunk.code.len());
-        loop {
+        while self.ip < self.chunk.code.len() {
             if debug {
                 // TODO: make this compile time
                 print!("[TRACE] ");
@@ -65,7 +64,7 @@ impl<'a> VM<'a> {
                 print!("[TRACE] ");
                 self.chunk.disassemble_instruction(self.ip);
             }
-            let byte = Self::read_byte(self.chunk, &mut self.ip);
+            let byte = Self::read_byte(&self.chunk, &mut self.ip);
             match byte.into() {
                 OpCode::Return => {
                     let ret = Self::pop_unsafe(&mut self.stack);
@@ -73,11 +72,11 @@ impl<'a> VM<'a> {
                     return Ok(ret);
                 }
                 OpCode::Constant => {
-                    let constant = Self::read_constant(self.chunk, &mut self.ip);
-                    self.stack.push(*constant);
+                    let constant = Self::read_constant(&self.chunk, &mut self.ip);
+                    self.stack.push(constant);
                 }
                 OpCode::ConstantLong => {
-                    let constant = Self::read_constant_long(self.chunk, &mut self.ip);
+                    let constant = Self::read_constant_long(&self.chunk, &mut self.ip);
                 }
                 OpCode::Negate => {
                     let last_ref = self.stack.last_mut().expect(STACK_UNDERFLOW);
@@ -101,6 +100,7 @@ impl<'a> VM<'a> {
                 }
             }
         }
+        Ok(0f64)
     }
 
     fn pop_unsafe(stack: &mut Stack) -> Value {
