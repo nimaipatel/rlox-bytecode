@@ -1,4 +1,3 @@
-#[derive(Debug)]
-pub enum Value {
-    Double(f64),
-}
+use std::fmt::{write, Display};
+
+pub type Value = f64;

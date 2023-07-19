@@ -9,7 +9,7 @@ mod tests {
     #[test]
     fn write_op_constant() {
         let mut chunk = Chunk::default();
-        chunk.write_constant(Value::Double(1.2), 1);
+        chunk.write_constant(1.2, 1);
         assert_eq!(chunk.code, vec![OpCode::Constant as u8, 0]);
     }
 
@@ -23,7 +23,7 @@ mod tests {
     #[test]
     fn test_line_info() {
         let mut chunk = Chunk::default();
-        chunk.write_constant(Value::Double(2.1), 1);
+        chunk.write_constant(1.2, 1);
         chunk.write(OpCode::Return as u8, 3);
         chunk.write(OpCode::Return as u8, 3);
         chunk.write(OpCode::Return as u8, 3);
@@ -32,7 +32,7 @@ mod tests {
         chunk.write(OpCode::Return as u8, 5);
         chunk.write(OpCode::Return as u8, 5);
         chunk.write(OpCode::Return as u8, 6);
-        chunk.write_constant(Value::Double(2.1), 6);
+        chunk.write_constant(1.2, 6);
         chunk.write(OpCode::Return as u8, 7);
 
         assert_eq!(
@@ -65,7 +65,7 @@ mod tests {
     #[test]
     fn test_get_line() {
         let mut chunk = Chunk::default();
-        chunk.write_constant(Value::Double(2.1), 1);
+        chunk.write_constant(1.2, 1);
         chunk.write(OpCode::Return as u8, 3);
         chunk.write(OpCode::Return as u8, 3);
         chunk.write(OpCode::Return as u8, 3);
@@ -74,7 +74,7 @@ mod tests {
         chunk.write(OpCode::Return as u8, 5);
         chunk.write(OpCode::Return as u8, 5);
         chunk.write(OpCode::Return as u8, 6);
-        chunk.write_constant(Value::Double(2.1), 6);
+        chunk.write_constant(1.2, 6);
         chunk.write(OpCode::Return as u8, 7);
 
         assert_eq!(chunk.get_line(0), 1);
@@ -88,7 +88,7 @@ mod tests {
     fn many_constants() {
         let mut chunk = Chunk::default();
         for i in 0..(255 * 255) {
-            chunk.write_constant(Value::Double(0f64), i);
+            chunk.write_constant(0f64, i);
         }
 
         // last index that can be stored in 1 byte
