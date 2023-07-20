@@ -1,6 +1,6 @@
 mod test;
 
-use std::borrow::BorrowMut;
+use std::{borrow::BorrowMut, cell::Cell};
 
 use crate::{
     chunk::Chunk,
@@ -18,7 +18,7 @@ static STACK_UNDERFLOW: &'static str = "Tried poping from empty stack";
 #[derive(Debug)]
 pub struct VM {
     pub chunk: Chunk,
-    ip: IP,
+    ip: Cell<IP>,
     stack: Stack,
 }
 
@@ -26,7 +26,7 @@ impl VM {
     pub fn new() -> Self {
         Self {
             chunk: Chunk::default(),
-            ip: 0,
+            ip: Cell::new(0),
             stack: Vec::with_capacity(256),
         }
     }
@@ -35,26 +35,27 @@ impl VM {
         self.stack.clear();
     }
 
-    fn read_byte(chunk: &Chunk, ip: &mut IP) -> u8 {
-        let instruction = chunk.code[*ip];
-        *ip += 1;
+    fn read_byte(&self) -> u8 {
+        let ip = self.ip.get();
+        let instruction = self.chunk.code[ip];
+        self.ip.set(ip + 1);
         instruction
     }
 
-    fn read_constant(chunk: &Chunk, ip: &mut IP) -> Value {
-        chunk.constants[Self::read_byte(chunk, ip) as usize]
+    fn read_constant(&self) -> Value {
+        self.chunk.constants[self.read_byte() as usize]
     }
 
-    fn read_constant_long(chunk: &Chunk, ip: &mut IP) -> Value {
-        let h = Self::read_byte(chunk, ip);
-        let m = Self::read_byte(chunk, ip);
-        let l = Self::read_byte(chunk, ip);
+    fn read_constant_long(&self) -> Value {
+        let h = self.read_byte();
+        let m = self.read_byte();
+        let l = self.read_byte();
         let idx = u32::from_be_bytes([0, h, m, l]);
-        chunk.constants[idx as usize]
+        self.chunk.constants[idx as usize]
     }
 
     pub fn run_bytecode(&mut self, debug: bool) -> Result<Value, InterpretError> {
-        while self.ip < self.chunk.code.len() {
+        while self.ip.get() < self.chunk.code.len() {
             if debug {
                 // TODO: make this compile time
                 print!("[TRACE] ");
@@ -62,9 +63,9 @@ impl VM {
                 print!("stack: {:?}", self.stack);
                 println!();
                 print!("[TRACE] ");
-                self.chunk.disassemble_instruction(self.ip);
+                self.chunk.disassemble_instruction(self.ip.get());
             }
-            let byte = Self::read_byte(&self.chunk, &mut self.ip);
+            let byte = self.read_byte();
             match byte.into() {
                 OpCode::Return => {
                     let ret = Self::pop_unsafe(&mut self.stack);
@@ -72,11 +73,11 @@ impl VM {
                     return Ok(ret);
                 }
                 OpCode::Constant => {
-                    let constant = Self::read_constant(&self.chunk, &mut self.ip);
+                    let constant = self.read_constant();
                     self.stack.push(constant);
                 }
                 OpCode::ConstantLong => {
-                    let constant = Self::read_constant_long(&self.chunk, &mut self.ip);
+                    let constant = self.read_constant_long();
                 }
                 OpCode::Negate => {
                     let last_ref = self.stack.last_mut().expect(STACK_UNDERFLOW);
