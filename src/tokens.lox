@@ -1,0 +1,6 @@
+let str = "not nice";
+if (str == "nice") {
+	print "str is nice";
+} else {
+	print "str is not nice";
+}

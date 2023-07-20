@@ -12,7 +12,7 @@ mod tests {
         vm.chunk.write(OpCode::Divide as u8, 123);
         vm.chunk.write(OpCode::Negate as u8, 123);
         vm.chunk.write(OpCode::Return as u8, 123);
-        let ret = vm.run(false).unwrap();
+        let ret = vm.run_bytecode(false).unwrap();
         assert_eq!(ret, -0.8214285714285714f64);
     }
 
@@ -23,7 +23,7 @@ mod tests {
         vm.chunk.write_constant(-2.4, 123);
         vm.chunk.write(OpCode::Divide as u8, 123);
         vm.chunk.write(OpCode::Return as u8, 123);
-        let ret = vm.run(false).unwrap();
+        let ret = vm.run_bytecode(false).unwrap();
         assert_eq!(ret, -0.5f64);
     }
 
@@ -34,7 +34,7 @@ mod tests {
         vm.chunk.write_constant(10f64, 123);
         vm.chunk.write(OpCode::Subtract as u8, 123);
         vm.chunk.write(OpCode::Return as u8, 123);
-        let ret = vm.run(false).unwrap();
+        let ret = vm.run_bytecode(false).unwrap();
         assert_eq!(ret, 90f64);
     }
     
@@ -44,7 +44,7 @@ mod tests {
         vm.chunk.write_constant(100f64, 123);
         vm.chunk.write_constant(10f64, 123);
         vm.chunk.write(OpCode::Subtract as u8, 123);
-        vm.run(false).unwrap();
+        vm.run_bytecode(false).unwrap();
         assert_eq!(vm.stack.last().unwrap(), &90f64);
     }
 }

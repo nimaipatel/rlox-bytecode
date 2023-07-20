@@ -2,7 +2,13 @@ mod test;
 
 use std::borrow::BorrowMut;
 
-use crate::{chunk::Chunk, error::InterpretError, opcode::OpCode, value::Value};
+use crate::{
+    chunk::Chunk,
+    compiler::{self, compile},
+    error::InterpretError,
+    opcode::OpCode,
+    value::Value,
+};
 
 type Stack = Vec<Value>;
 type IP = usize;
@@ -35,12 +41,6 @@ impl VM {
         instruction
     }
 
-    // fn read_byte(&mut self) -> u8 {
-    //     let instruction = self.chunk.code[self.ip];
-    //     self.ip += 1;
-    //     instruction
-    // }
-
     fn read_constant(chunk: &Chunk, ip: &mut IP) -> Value {
         chunk.constants[Self::read_byte(chunk, ip) as usize]
     }
@@ -53,7 +53,7 @@ impl VM {
         chunk.constants[idx as usize]
     }
 
-    pub fn run(&mut self, debug: bool) -> Result<Value, InterpretError> {
+    pub fn run_bytecode(&mut self, debug: bool) -> Result<Value, InterpretError> {
         while self.ip < self.chunk.code.len() {
             if debug {
                 // TODO: make this compile time
@@ -111,5 +111,10 @@ impl VM {
         let b = stack.pop().expect(STACK_UNDERFLOW);
         let a = stack.pop().expect(STACK_UNDERFLOW);
         (a, b)
+    }
+
+    fn run(&mut self, source: &str) -> Result<(), InterpretError> {
+        compile(source);
+        Ok(())
     }
 }
