@@ -1,9 +1,8 @@
 use std::fmt::{Debug, Display};
 use std::str;
 
+use crate::byte_string::ByteString;
 use crate::token_type::TokenType;
-
-type ByteString = [u8];
 
 pub struct Token<'a> {
     token_type: TokenType,

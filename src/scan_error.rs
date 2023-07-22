@@ -1,6 +1,6 @@
 use std::{error::Error, fmt::Display};
 
-type Byte = u8;
+use crate::byte_string::Byte;
 
 #[derive(Debug)]
 pub enum ScanError {

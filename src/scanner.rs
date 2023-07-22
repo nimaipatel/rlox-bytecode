@@ -1,13 +1,11 @@
 use std::{cell::RefCell, iter::Enumerate, slice::Iter};
 
 use crate::{
+    byte_string::{ByteString, Byte},
     scan_error::ScanError,
     token::Token,
     token_type::{string_to_keyword, TokenType},
 };
-
-type ByteString = [u8];
-type Byte = u8;
 
 pub struct Scanner<'a> {
     bytes: &'a ByteString,
