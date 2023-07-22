@@ -1,11 +1,13 @@
+mod scan_error;
 use std::{cell::RefCell, iter::Enumerate, slice::Iter};
 
 use crate::{
     byte_string::{ByteString, Byte},
-    scan_error::ScanError,
     token::Token,
     token_type::{string_to_keyword, TokenType},
 };
+
+use self::scan_error::ScanError;
 
 pub struct Scanner<'a> {
     bytes: &'a ByteString,

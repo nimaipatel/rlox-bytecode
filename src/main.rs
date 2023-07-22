@@ -2,7 +2,7 @@ mod chunk;
 mod compiler;
 mod error;
 mod opcode;
-mod scan_error;
+mod lazy_scanner;
 mod scanner;
 mod token;
 mod token_type;
