@@ -2,7 +2,6 @@ mod test;
 
 use std::u8;
 
-use crate::chunk;
 use crate::opcode::OpCode;
 use crate::value::Value;
 
@@ -38,9 +37,9 @@ impl Chunk {
             self.constants.push(value);
             self.write(OpCode::ConstantLong as u8, line_number);
             let [.., h, m, l] = (self.constants.len() - 1).to_be_bytes();
-            self.write(h as u8, line_number);
-            self.write(m as u8, line_number);
-            self.write(l as u8, line_number);
+            self.write(h, line_number);
+            self.write(m, line_number);
+            self.write(l, line_number);
         }
     }
 

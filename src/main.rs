@@ -31,7 +31,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let args = env::args().collect::<Vec<_>>();
     match &args[..] {
         [_] => run_prompt()?,
-        [_, script_name] => run_file(&script_name)?,
+        [_, script_name] => run_file(script_name)?,
         [prog_name, ..] => println!("Usage: {} [script]", prog_name),
         [] => unreachable!(),
     }

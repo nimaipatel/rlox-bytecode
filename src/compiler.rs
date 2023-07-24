@@ -1,14 +1,12 @@
 use crate::byte_string::Byte;
-use crate::chunk::{self, Chunk};
+use crate::chunk::Chunk;
 use crate::expr::Expr;
 use crate::opcode::OpCode;
-use crate::parser::{self, parse, parse_expression};
-use crate::scanner::{self, scan};
-use crate::token::Token;
+use crate::parser::parse_expression;
+use crate::scanner::scan;
 use crate::token_type::TokenType;
 use crate::value::Value;
 use std::str;
-use std::sync::Arc;
 
 fn emit_byte(chunk: &mut Chunk, byte: Byte, line: usize) {
     chunk.write(byte, line);
@@ -20,7 +18,7 @@ fn emit_constant(chunk: &mut Chunk, value: Value, line: usize) {
 
 fn compile_expr<'a>(chunk: &mut Chunk, expr: &'a Expr<'a>) {
     match expr {
-        Expr::NumericLiteral(n) => emit_constant(chunk, (*n).into(), 0), // TODO: use the actual line number
+        Expr::NumericLiteral(n) => emit_constant(chunk, *n, 0), // TODO: use the actual line number
         Expr::Unary { op, expr } => {
             compile_expr(chunk, expr);
             match op.token_type {

@@ -1,10 +1,7 @@
 use std::{error::Error, fmt::Display};
 
 #[derive(Debug)]
-pub enum InterpretError {
-    CompileError,
-    RuntimeError,
-}
+pub enum InterpretError {}
 
 impl Error for InterpretError {}
 

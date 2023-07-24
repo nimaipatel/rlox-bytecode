@@ -9,7 +9,7 @@ use crate::{
 
 use self::scan_error::ScanError;
 
-pub fn scan<'a>(src: &'a ByteString) -> Result<Vec<Token<'a>>, ScanError> {
+pub fn scan(src: &'_ ByteString) -> Result<Vec<Token<'_>>, ScanError> {
     let mut line = 1;
     let mut tokens = Vec::new();
     let mut chars = src.iter().enumerate().peekable();
@@ -99,8 +99,8 @@ pub fn scan<'a>(src: &'a ByteString) -> Result<Vec<Token<'a>>, ScanError> {
                 }
             }
             b'"' => {
-                while let Some((end_idx, maybe_end_quote)) = chars.next() {
-                    match maybe_end_quote {
+                for (end_idx, c) in chars.by_ref() {
+                    match c {
                         b'"' => {
                             let lexeme = &src[idx..=end_idx];
                             tokens.push(Token::new(TokenType::String, lexeme, line));

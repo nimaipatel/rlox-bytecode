@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use crate::{chunk::Chunk, opcode::OpCode, value::Value};
+    use crate::{chunk::Chunk, opcode::OpCode};
 
     #[test]
     fn write_op_constant() {
