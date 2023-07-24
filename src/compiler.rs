@@ -45,10 +45,8 @@ fn compile_expr<'a>(chunk: &mut Chunk, expr: &'a Expr<'a>) {
     }
 }
 
-pub fn compile(source: &str, chunk: &mut Chunk) -> Result<(), ()> {
-    let tokens = scan(source.as_bytes()).unwrap();
-    let (expr, _) = parse_expression(&tokens[..], 0).unwrap();
+pub fn compile<'a>(expr: &Expr<'a>, chunk: &mut Chunk) -> Result<(), ()> {
     compile_expr(chunk, &expr);
-    emit_byte(chunk, OpCode::Return as u8, 0);
+    // emit_byte(chunk, OpCode::Return as u8, 0);
     Ok(())
 }

@@ -2,7 +2,10 @@ mod test;
 
 use std::cell::Cell;
 
-use crate::{chunk::Chunk, error::RuntimeError, opcode::OpCode, value::Value};
+use crate::{
+    chunk::Chunk, compiler::compile, error::RuntimeError, opcode::OpCode, parser::parse_expression,
+    scanner::scan, value::Value,
+};
 
 type Stack = Vec<Value>;
 type IP = usize;
@@ -25,7 +28,7 @@ impl VM {
         }
     }
 
-    fn reset_stack(&mut self) {
+    pub fn reset_stack(&mut self) {
         self.stack.clear();
     }
 
@@ -112,8 +115,15 @@ impl VM {
         (a, b)
     }
 
-    // fn run(&mut self, source: &str) -> Result<(), InterpretError> {
-    //     let chunk = compile(source);
-    //     Ok(())
-    // }
+    pub fn run(
+        &mut self,
+        source: &str,
+        chunk: &mut Chunk,
+        debug: bool,
+    ) -> Result<Value, RuntimeError> {
+        let tokens = scan(source.as_bytes()).unwrap();
+        let (expr, _) = parse_expression(&tokens, 0).unwrap();
+        compile(&expr, chunk).unwrap();
+        self.run_bytecode(chunk, debug)
+    }
 }

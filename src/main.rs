@@ -43,8 +43,7 @@ fn run_file(script_name: &str) -> io::Result<()> {
     let mut file = File::open(script_name)?;
     let mut source = String::new();
     file.read_to_string(&mut source)?;
-    compile(&source, &mut chunk).unwrap();
-    vm.run_bytecode(&chunk, true).unwrap();
+    vm.run(&source, &mut chunk, true).unwrap();
     Ok(())
 }
 
@@ -62,10 +61,14 @@ fn run_prompt() -> io::Result<()> {
         if line.is_empty() {
             break;
         } else {
-            compile(&line, &mut chunk).unwrap();
+            match vm.run(&line, &mut chunk, true) {
+                Ok(_) => (),
+                Err(e) => {
+                    vm.reset_stack();
+                    print!("{}", e)
+                },
+            };
             input_history.push(line);
-            chunk.disassemble("test");
-            vm.run_bytecode(&chunk, true).unwrap();
         }
     }
     Ok(())
