@@ -4,10 +4,11 @@ use std::str;
 use crate::byte_string::ByteString;
 use crate::token_type::TokenType;
 
+#[derive(Clone, Copy, PartialEq)]
 pub struct Token<'a> {
-    token_type: TokenType,
+    pub token_type: TokenType,
     pub lexeme: &'a ByteString,
-    line: usize,
+    pub line: usize,
 }
 
 impl Debug for Token<'_> {

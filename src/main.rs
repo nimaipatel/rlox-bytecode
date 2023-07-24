@@ -9,6 +9,9 @@ mod token_type;
 mod value;
 mod vm;
 mod byte_string;
+mod parser;
+mod expr;
+mod stmt;
 
 use std::{
     env,
@@ -36,19 +39,22 @@ fn main() -> Result<(), Box<dyn Error>> {
 }
 
 fn run_file(script_name: &str) -> io::Result<()> {
-    let vm = VM::new();
+    let mut chunk = Chunk::default();
+    let mut vm = VM::new();
     let mut file = File::open(script_name)?;
     let mut source = String::new();
     file.read_to_string(&mut source)?;
-    compile(&source);
+    compile(&source, &mut chunk).unwrap();
+    vm.run_bytecode(&chunk, true).unwrap();
     Ok(())
 }
 
 fn run_prompt() -> io::Result<()> {
     // we need to incrementally update the chunk to make this work
+    let mut chunk = Chunk::default();
     let mut input_history: Vec<String> = Vec::new();
-    let vm = VM::new();
     let stdin = io::stdin();
+    let mut vm = VM::new();
     loop {
         print!("> ");
         io::stdout().flush()?;
@@ -57,8 +63,10 @@ fn run_prompt() -> io::Result<()> {
         if line.is_empty() {
             break;
         } else {
-            compile(&line);
+            compile(&line, &mut chunk).unwrap();
             input_history.push(line);
+            chunk.disassemble("test");
+            vm.run_bytecode(&chunk, true).unwrap();
         }
     }
     Ok(())
