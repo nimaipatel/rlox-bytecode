@@ -24,12 +24,6 @@ impl Debug for Token<'_> {
     }
 }
 
-impl Display for Token<'_> {
-    fn fmt(&self, _f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        todo!()
-    }
-}
-
 impl<'a> Token<'a> {
     pub fn new(token_type: TokenType, lexeme: &'a ByteString, line: usize) -> Self {
         Self {
