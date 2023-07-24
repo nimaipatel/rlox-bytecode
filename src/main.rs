@@ -1,17 +1,17 @@
+mod byte_string;
 mod chunk;
 mod compiler;
 mod error;
-mod opcode;
+mod expr;
 mod lazy_scanner;
+mod opcode;
+mod parser;
 mod scanner;
+mod stmt;
 mod token;
 mod token_type;
 mod value;
 mod vm;
-mod byte_string;
-mod parser;
-mod expr;
-mod stmt;
 
 use std::{
     env,
@@ -21,8 +21,7 @@ use std::{
 };
 
 use chunk::Chunk;
-use opcode::OpCode;
-use value::Value;
+
 use vm::VM;
 
 use crate::compiler::compile;

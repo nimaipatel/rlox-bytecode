@@ -1,8 +1,8 @@
 mod scan_error;
-use std::{cell::RefCell, iter::Enumerate, slice::Iter};
+use std::cell::RefCell;
 
 use crate::{
-    byte_string::{ByteString, Byte},
+    byte_string::{Byte, ByteString},
     token::Token,
     token_type::{string_to_keyword, TokenType},
 };
@@ -23,7 +23,7 @@ fn is_alpha(byte: Byte) -> bool {
 impl<'a> Scanner<'a> {
     pub fn new(bytes: &'a ByteString) -> Self {
         Self {
-            bytes: bytes,
+            bytes,
             start: 0,
             current: RefCell::new(0),
             line: RefCell::new(1),
@@ -126,7 +126,7 @@ impl<'a> Scanner<'a> {
     }
 
     fn make_ident(&self) -> Token<'a> {
-        while (is_alpha(self.peek()) || self.peek().is_ascii_digit()) {
+        while is_alpha(self.peek()) || self.peek().is_ascii_digit() {
             self.advance();
         }
         let lexeme = &self.bytes[self.start..*self.current.borrow()];

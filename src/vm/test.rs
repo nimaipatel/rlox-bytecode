@@ -40,7 +40,7 @@ mod tests {
         let ret = vm.run_bytecode(&chunk, false).unwrap();
         assert_eq!(ret, 90f64);
     }
-    
+
     #[test]
     fn test_op_add() {
         let mut chunk = Chunk::default();

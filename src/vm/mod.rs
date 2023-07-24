@@ -1,22 +1,13 @@
 mod test;
 
-use std::{
-    borrow::BorrowMut,
-    cell::{Cell, RefCell},
-};
+use std::cell::Cell;
 
-use crate::{
-    chunk::{Chunk, self},
-    compiler::{self, compile},
-    error::InterpretError,
-    opcode::OpCode,
-    value::Value,
-};
+use crate::{chunk::Chunk, error::InterpretError, opcode::OpCode, value::Value};
 
 type Stack = Vec<Value>;
 type IP = usize;
 
-static STACK_UNDERFLOW: &'static str = "Tried poping from empty stack";
+static STACK_UNDERFLOW: &'_ str = "Tried poping from empty stack";
 
 #[derive(Debug)]
 pub struct VM {
@@ -81,6 +72,7 @@ impl VM {
                 }
                 OpCode::ConstantLong => {
                     let constant = self.read_constant_long(chunk);
+                    self.stack.push(constant);
                 }
                 OpCode::Negate => {
                     let last_ref = self.stack.last_mut().expect(STACK_UNDERFLOW);

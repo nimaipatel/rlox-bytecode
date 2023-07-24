@@ -1,4 +1,4 @@
-use crate::{token::Token, byte_string::ByteString};
+use crate::{byte_string::ByteString, token::Token};
 
 #[derive(Debug, PartialEq)]
 pub enum Expr<'a> {
