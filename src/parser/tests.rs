@@ -4,7 +4,7 @@ mod tests {
 
     #[test]
     fn test_parse_literal() {
-        let source = "123\n\n";
+        let source = "123\n\n".as_bytes();
         let tokens = scanner::scan(source).unwrap();
         let (actual, _) = parse_primary(&tokens, 0).unwrap();
         let expected = Expr::NumericLiteral(123.);
@@ -13,7 +13,7 @@ mod tests {
 
     #[test]
     fn test_parse_unary() {
-        let source = "\n!123\n";
+        let source = "\n!123\n".as_bytes();
         let tokens = scanner::scan(source).unwrap();
         let (actual, _) = parse_unary(&tokens, 0).unwrap();
         assert!(matches!(
@@ -30,7 +30,7 @@ mod tests {
 
     #[test]
     fn test_parse_factor() {
-        let source = "\n123 * 123\n";
+        let source = "\n123 * 123\n".as_bytes();
         let tokens = scanner::scan(source).unwrap();
         let (actual, _) = parse_factor(&tokens, 0).unwrap();
         assert!(matches!(
@@ -47,7 +47,7 @@ mod tests {
 
     #[test]
     fn test_parse_factor2() {
-        let source = "\n123 / 123\n";
+        let source = "\n123 / 123\n".as_bytes();
         let tokens = scanner::scan(source).unwrap();
         let (actual, _) = parse_factor(&tokens, 0).unwrap();
         assert!(matches!(
@@ -64,7 +64,7 @@ mod tests {
 
     #[test]
     fn test_parse_term() {
-        let source = "1 * 2 + 2";
+        let source = "1 * 2 + 2".as_bytes();
         let tokens = scanner::scan(source).unwrap();
         let (actual, _) = parse_term(&tokens, 0).unwrap();
         assert!(matches!(
@@ -81,7 +81,7 @@ mod tests {
 
     #[test]
     fn test_parse_term2() {
-        let source = "1 - 2 * 2";
+        let source = "1 - 2 * 2".as_bytes();
         let tokens = scanner::scan(source).unwrap();
         let (actual, _) = parse_term(&tokens, 0).unwrap();
         assert!(matches!(
@@ -98,7 +98,7 @@ mod tests {
 
     #[test]
     fn test_comp() {
-        let source = "1 * 2 >=  1 + 1";
+        let source = "1 * 2 >=  1 + 1".as_bytes();
         let tokens = scanner::scan(source).unwrap();
         let (actual, _) = parse_comp(&tokens, 0).unwrap();
         assert!(matches!(
@@ -115,7 +115,7 @@ mod tests {
 
     #[test]
     fn test_grouping() {
-        let source = "(1 + 3)";
+        let source = "(1 + 3)".as_bytes();
         let tokens = scanner::scan(source).unwrap();
         let (actual, _) = parse_primary(&tokens, 0).unwrap();
         assert!(matches!(actual, Expr::Grouping(..)))

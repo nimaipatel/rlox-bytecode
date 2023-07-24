@@ -5,12 +5,12 @@ mod tests {
     #[test]
     fn leftparen_rightparen_bang() {
         let source = "()!";
-        let act_out = scan(source).unwrap();
+        let act_out = scan(source.as_bytes()).unwrap();
         let exp_out = vec![
-            Token::new(TokenType::LeftParen, "(", 1),
-            Token::new(TokenType::RightParen, ")", 1),
-            Token::new(TokenType::Bang, "!", 1),
-            Token::new(TokenType::Eof, "", 1),
+            Token::new(TokenType::LeftParen, b"(", 1),
+            Token::new(TokenType::RightParen, b")", 1),
+            Token::new(TokenType::Bang, b"!", 1),
+            Token::new(TokenType::Eof, b"", 1),
         ];
         assert_eq!(act_out, exp_out);
     }
@@ -18,12 +18,12 @@ mod tests {
     #[test]
     fn leftparen_rightparen_bangequal() {
         let source = "()!=";
-        let act_out = scan(source).unwrap();
+        let act_out = scan(source.as_bytes()).unwrap();
         let exp_out = vec![
-            Token::new(TokenType::LeftParen, "(", 1),
-            Token::new(TokenType::RightParen, ")", 1),
-            Token::new(TokenType::BangEqual, "!=", 1),
-            Token::new(TokenType::Eof, "", 1),
+            Token::new(TokenType::LeftParen, b"(", 1),
+            Token::new(TokenType::RightParen, b")", 1),
+            Token::new(TokenType::BangEqual, b"!=", 1),
+            Token::new(TokenType::Eof, b"", 1),
         ];
         assert_eq!(act_out, exp_out);
     }
@@ -31,12 +31,12 @@ mod tests {
     #[test]
     fn number_operator_number() {
         let source = "456!=123";
-        let act_out = scan(source).unwrap();
+        let act_out = scan(source.as_bytes()).unwrap();
         let exp_out = vec![
-            Token::new(TokenType::Number, "456", 1),
-            Token::new(TokenType::BangEqual, "!=", 1),
-            Token::new(TokenType::Number, "123", 1),
-            Token::new(TokenType::Eof, "", 1),
+            Token::new(TokenType::Number, b"456", 1),
+            Token::new(TokenType::BangEqual, b"!=", 1),
+            Token::new(TokenType::Number, b"123", 1),
+            Token::new(TokenType::Eof, b"", 1),
         ];
         assert_eq!(act_out, exp_out);
     }
@@ -44,15 +44,15 @@ mod tests {
     #[test]
     fn something_then_comment_then_something() {
         let source = "456!=123// this is a comment\n789!=789";
-        let act_out = scan(source).unwrap();
+        let act_out = scan(source.as_bytes()).unwrap();
         let exp_out = vec![
-            Token::new(TokenType::Number, "456", 1),
-            Token::new(TokenType::BangEqual, "!=", 1),
-            Token::new(TokenType::Number, "123", 1),
-            Token::new(TokenType::Number, "789", 2),
-            Token::new(TokenType::BangEqual, "!=", 2),
-            Token::new(TokenType::Number, "789", 2),
-            Token::new(TokenType::Eof, "", 2),
+            Token::new(TokenType::Number, b"456", 1),
+            Token::new(TokenType::BangEqual, b"!=", 1),
+            Token::new(TokenType::Number, b"123", 1),
+            Token::new(TokenType::Number, b"789", 2),
+            Token::new(TokenType::BangEqual, b"!=", 2),
+            Token::new(TokenType::Number, b"789", 2),
+            Token::new(TokenType::Eof, b"", 2),
         ];
         assert_eq!(act_out, exp_out);
     }
@@ -60,11 +60,11 @@ mod tests {
     #[test]
     fn string_literal_nl_string_literal() {
         let source = "\"nice\"\n\"lol\"";
-        let act_out = scan(source).unwrap();
+        let act_out = scan(source.as_bytes()).unwrap();
         let exp_out = vec![
-            Token::new(TokenType::String, "\"nice\"", 1),
-            Token::new(TokenType::String, "\"lol\"", 2),
-            Token::new(TokenType::Eof, "", 2),
+            Token::new(TokenType::String, b"\"nice\"", 1),
+            Token::new(TokenType::String, b"\"lol\"", 2),
+            Token::new(TokenType::Eof, b"", 2),
         ];
         assert_eq!(act_out, exp_out);
     }
@@ -72,12 +72,12 @@ mod tests {
     #[test]
     fn identifier() {
         let source = "nice != 69";
-        let act_out = scan(source).unwrap();
+        let act_out = scan(source.as_bytes()).unwrap();
         let exp_out = vec![
-            Token::new(TokenType::Identifier, "nice", 1),
-            Token::new(TokenType::BangEqual, "!=", 1),
-            Token::new(TokenType::Number, "69", 1),
-            Token::new(TokenType::Eof, "", 1),
+            Token::new(TokenType::Identifier, b"nice", 1),
+            Token::new(TokenType::BangEqual, b"!=", 1),
+            Token::new(TokenType::Number, b"69", 1),
+            Token::new(TokenType::Eof, b"", 1),
         ];
         assert_eq!(act_out, exp_out);
     }
@@ -85,15 +85,15 @@ mod tests {
     #[test]
     fn test() {
         let source = "if nice == 69 {}";
-        let act_out = scan(source).unwrap();
+        let act_out = scan(source.as_bytes()).unwrap();
         let exp_out = vec![
-            Token::new(TokenType::If, "if", 1),
-            Token::new(TokenType::Identifier, "nice", 1),
-            Token::new(TokenType::EqualEqual, "==", 1),
-            Token::new(TokenType::Number, "69", 1),
-            Token::new(TokenType::LeftBrace, "{", 1),
-            Token::new(TokenType::RightBrace, "}", 1),
-            Token::new(TokenType::Eof, "", 1),
+            Token::new(TokenType::If, b"if", 1),
+            Token::new(TokenType::Identifier, b"nice", 1),
+            Token::new(TokenType::EqualEqual, b"==", 1),
+            Token::new(TokenType::Number, b"69", 1),
+            Token::new(TokenType::LeftBrace, b"{", 1),
+            Token::new(TokenType::RightBrace, b"}", 1),
+            Token::new(TokenType::Eof, b"", 1),
         ];
         assert_eq!(act_out, exp_out);
     }
@@ -101,12 +101,12 @@ mod tests {
     #[test]
     fn test_decimal_token() {
         let source = "1.23 >= 3.45";
-        let actual = scan(source).unwrap();
+        let actual = scan(source.as_bytes()).unwrap();
         let expected = vec![
-            Token::new(TokenType::Number, "1.23", 1),
-            Token::new(TokenType::GreaterEqual, ">=", 1),
-            Token::new(TokenType::Number, "3.45", 1),
-            Token::new(TokenType::Eof, "", 1),
+            Token::new(TokenType::Number, b"1.23", 1),
+            Token::new(TokenType::GreaterEqual, b">=", 1),
+            Token::new(TokenType::Number, b"3.45", 1),
+            Token::new(TokenType::Eof, b"", 1),
         ];
         assert_eq!(actual, expected);
     }

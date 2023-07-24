@@ -130,7 +130,6 @@ fn parse_function<'a>(
 
     let mut params = Vec::new();
     if tokens[pos].token_type != TokenType::RightParen {
-        // dbg!(&tokens[pos].token_type);
         loop {
             let (param, new_pos) = consume(tokens, pos, TokenType::Identifier)?;
             pos = new_pos;
@@ -600,7 +599,6 @@ fn parse_call_finish<'a>(
     let mut pos = pos;
     let mut arguments = Vec::new();
     if tokens[pos].token_type != TokenType::RightParen {
-        // dbg!(&tokens[pos].token_type);
         let (argument, new_pos) = parse_expression(tokens, pos)?;
         arguments.push(argument);
         pos = new_pos;

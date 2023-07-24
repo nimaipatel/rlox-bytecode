@@ -110,9 +110,9 @@ pub fn scan<'a>(src: &'a ByteString) -> Result<Vec<Token<'a>>, ScanError> {
                         _ => (),
                     }
                 }
-                if chars.peek() == None {
-                    return Err(ScanError::UnterminatedString(line));
-                }
+                // if chars.peek() == None {
+                //     return Err(ScanError::UnterminatedString(line));
+                // }
             }
             digit if digit.is_ascii_digit() => {
                 let mut end_idx = idx;
