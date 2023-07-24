@@ -17,7 +17,16 @@ impl From<f64> for Value {
 
 impl From<bool> for Value {
     fn from(value: bool) -> Self {
-        todo!()
+        Self::Boolean(value)
+    }
+}
+
+impl Into<bool> for Value {
+    fn into(self) -> bool {
+        match self {
+            Value::Nil | Value::Boolean(false) => false,
+            _ => true,
+        }
     }
 }
 

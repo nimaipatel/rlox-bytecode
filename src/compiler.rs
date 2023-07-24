@@ -23,6 +23,7 @@ fn compile_expr<'a>(chunk: &mut Chunk, expr: &'a Expr<'a>) {
             compile_expr(chunk, expr);
             match op.token_type {
                 TokenType::Minus => emit_byte(chunk, OpCode::Negate as u8, op.line),
+                TokenType::Bang => emit_byte(chunk, OpCode::Not as u8, op.line),
                 _ => unreachable!(),
             }
         }
@@ -47,6 +48,6 @@ fn compile_expr<'a>(chunk: &mut Chunk, expr: &'a Expr<'a>) {
 
 pub fn compile<'a>(expr: &Expr<'a>, chunk: &mut Chunk) -> Result<(), ()> {
     compile_expr(chunk, &expr);
-    // emit_byte(chunk, OpCode::Return as u8, 0);
+    emit_byte(chunk, OpCode::Return as u8, 0);
     Ok(())
 }

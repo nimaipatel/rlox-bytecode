@@ -100,6 +100,11 @@ impl VM {
                 OpCode::Nil => self.stack.push(Value::Nil),
                 OpCode::True => self.stack.push(Value::Boolean(true)),
                 OpCode::False => self.stack.push(Value::Boolean(false)),
+                OpCode::Not => {
+                    let last_ref = self.stack.last_mut().expect(STACK_UNDERFLOW);
+                    let as_bool: bool = (*last_ref).into();
+                    *last_ref = Value::Boolean(!as_bool);
+                }
             }
         }
         Ok(0f64.into())
