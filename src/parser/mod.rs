@@ -65,7 +65,7 @@ use self::parse_error::ParseError;
 //                | "(" expression ")"
 //                | IDENTIFIER ;
 
-pub fn parse<'a>(tokens: &'a Vec<Token<'a>>) -> (Vec<Stmt<'a>>, Vec<ParseError>) {
+pub fn parse<'a>(tokens: &'a [Token<'a>]) -> (Vec<Stmt<'a>>, Vec<ParseError>) {
     let mut statements = Vec::new();
     let mut errors = Vec::new();
     let mut pos: usize = 0;
@@ -111,7 +111,7 @@ fn synchronize(tokens: &[Token<'_>], pos: usize) -> usize {
 }
 
 fn parse_declaration<'a>(
-    tokens: &'a Vec<Token<'a>>,
+    tokens: &'a [Token<'a>],
     pos: usize,
 ) -> Result<(Stmt<'a>, usize), ParseError> {
     match tokens[pos].token_type {
@@ -122,7 +122,7 @@ fn parse_declaration<'a>(
 }
 
 fn parse_function<'a>(
-    tokens: &'a Vec<Token<'a>>,
+    tokens: &'a [Token<'a>],
     pos: usize,
 ) -> Result<(Stmt<'a>, usize), ParseError> {
     let (name, pos) = consume(tokens, pos, TokenType::Identifier)?;
@@ -158,7 +158,7 @@ fn parse_function<'a>(
 }
 
 fn parse_var_declaration<'a>(
-    tokens: &'a Vec<Token<'a>>,
+    tokens: &'a [Token<'a>],
     pos: usize,
 ) -> Result<(Stmt<'a>, usize), ParseError> {
     let (name, pos) = consume(tokens, pos, TokenType::Identifier)?;
@@ -177,7 +177,7 @@ fn parse_var_declaration<'a>(
 }
 
 fn parse_statement<'a>(
-    tokens: &'a Vec<Token<'a>>,
+    tokens: &'a [Token<'a>],
     pos: usize,
 ) -> Result<(Stmt<'a>, usize), ParseError> {
     match tokens[pos].token_type {
@@ -192,7 +192,7 @@ fn parse_statement<'a>(
 }
 
 fn parse_return_statement<'a>(
-    tokens: &'a Vec<Token<'a>>,
+    tokens: &'a [Token<'a>],
     mut pos: usize,
 ) -> Result<(Stmt<'a>, usize), ParseError<'a>> {
     let keyword = &tokens[pos];
@@ -212,7 +212,7 @@ fn parse_return_statement<'a>(
 }
 
 fn parse_for_statement<'a>(
-    tokens: &'a Vec<Token<'a>>,
+    tokens: &'a [Token<'a>],
     pos: usize,
 ) -> Result<(Stmt<'a>, usize), ParseError<'a>> {
     let (_, mut pos) = consume(tokens, pos, TokenType::LeftParen)?;
@@ -288,7 +288,7 @@ fn parse_for_statement<'a>(
 }
 
 fn parse_while_statement<'a>(
-    tokens: &'a Vec<Token<'a>>,
+    tokens: &'a [Token<'a>],
     pos: usize,
 ) -> Result<(Stmt<'a>, usize), ParseError<'a>> {
     let (_, pos) = consume(tokens, pos, TokenType::LeftParen)?;
@@ -305,7 +305,7 @@ fn parse_while_statement<'a>(
 }
 
 fn parse_if_statment<'a>(
-    tokens: &'a Vec<Token<'a>>,
+    tokens: &'a [Token<'a>],
     pos: usize,
 ) -> Result<(Stmt<'a>, usize), ParseError<'a>> {
     let (_, pos) = consume(tokens, pos, TokenType::LeftParen)?;
@@ -335,10 +335,7 @@ fn parse_if_statment<'a>(
     }
 }
 
-fn parse_block<'a>(
-    tokens: &'a Vec<Token<'a>>,
-    pos: usize,
-) -> Result<(Stmt<'a>, usize), ParseError> {
+fn parse_block<'a>(tokens: &'a [Token<'a>], pos: usize) -> Result<(Stmt<'a>, usize), ParseError> {
     let mut pos = pos;
     let mut statements = Vec::new();
 
@@ -358,7 +355,7 @@ fn parse_block<'a>(
 }
 
 fn parse_expression_statement<'a>(
-    tokens: &'a Vec<Token<'a>>,
+    tokens: &'a [Token<'a>],
     pos: usize,
 ) -> Result<(Stmt<'a>, usize), ParseError> {
     let (expr, pos) = parse_expression(tokens, pos)?;
@@ -367,7 +364,7 @@ fn parse_expression_statement<'a>(
 }
 
 fn parse_print_statement<'a>(
-    tokens: &'a Vec<Token<'a>>,
+    tokens: &'a [Token<'a>],
     pos: usize,
 ) -> Result<(Stmt<'a>, usize), ParseError> {
     let (value, pos) = parse_expression(tokens, pos)?;
@@ -377,7 +374,7 @@ fn parse_print_statement<'a>(
 
 // TODO: replace all instances of the consuming pattern with this function
 fn consume<'a>(
-    tokens: &'a Vec<Token<'a>>,
+    tokens: &'a [Token<'a>],
     pos: usize,
     expected: TokenType,
 ) -> Result<(&'a Token<'a>, usize), ParseError<'a>> {
@@ -392,7 +389,7 @@ fn consume<'a>(
 }
 
 fn matchh<'a>(
-    tokens: &'a Vec<Token<'a>>,
+    tokens: &'a [Token<'a>],
     pos: usize,
     expected: Vec<TokenType>,
 ) -> Option<(&'a Token<'a>, usize)> {
@@ -405,14 +402,14 @@ fn matchh<'a>(
 }
 
 pub fn parse_expression<'a>(
-    tokens: &'a Vec<Token<'a>>,
+    tokens: &'a [Token<'a>],
     pos: usize,
 ) -> Result<(Expr<'a>, usize), ParseError> {
     parse_assignment(tokens, pos)
 }
 
 fn parse_assignment<'a>(
-    tokens: &'a Vec<Token<'a>>,
+    tokens: &'a [Token<'a>],
     pos: usize,
 ) -> Result<(Expr<'a>, usize), ParseError> {
     let (expr, pos) = parse_or(tokens, pos)?;
@@ -434,10 +431,7 @@ fn parse_assignment<'a>(
     }
 }
 
-fn parse_or<'a>(
-    tokens: &'a Vec<Token<'a>>,
-    pos: usize,
-) -> Result<(Expr<'a>, usize), ParseError<'a>> {
+fn parse_or<'a>(tokens: &'a [Token<'a>], pos: usize) -> Result<(Expr<'a>, usize), ParseError<'a>> {
     let (mut expr, mut pos) = parse_and(tokens, pos)?;
     loop {
         match matchh(tokens, pos, vec![TokenType::Or]) {
@@ -456,10 +450,7 @@ fn parse_or<'a>(
     Ok((expr, pos))
 }
 
-fn parse_and<'a>(
-    tokens: &'a Vec<Token<'a>>,
-    pos: usize,
-) -> Result<(Expr<'a>, usize), ParseError<'a>> {
+fn parse_and<'a>(tokens: &'a [Token<'a>], pos: usize) -> Result<(Expr<'a>, usize), ParseError<'a>> {
     let (mut expr, mut pos) = parse_equality(tokens, pos)?;
     loop {
         match matchh(tokens, pos, vec![TokenType::And]) {
@@ -479,7 +470,7 @@ fn parse_and<'a>(
 }
 
 fn parse_equality<'a>(
-    tokens: &'a Vec<Token<'a>>,
+    tokens: &'a [Token<'a>],
     pos: usize,
 ) -> Result<(Expr<'a>, usize), ParseError> {
     let (mut expr, mut pos) = parse_comp(tokens, pos)?;
@@ -503,7 +494,7 @@ fn parse_equality<'a>(
     Ok((expr, pos))
 }
 
-fn parse_comp<'a>(tokens: &'a Vec<Token<'a>>, pos: usize) -> Result<(Expr<'a>, usize), ParseError> {
+fn parse_comp<'a>(tokens: &'a [Token<'a>], pos: usize) -> Result<(Expr<'a>, usize), ParseError> {
     let (mut expr, mut pos) = parse_term(tokens, pos)?;
     loop {
         let comp_token = tokens.get(pos).ok_or(ParseError::UnexpectedEndOfInput {
@@ -527,7 +518,7 @@ fn parse_comp<'a>(tokens: &'a Vec<Token<'a>>, pos: usize) -> Result<(Expr<'a>, u
     Ok((expr, pos))
 }
 
-fn parse_term<'a>(tokens: &'a Vec<Token<'a>>, pos: usize) -> Result<(Expr<'a>, usize), ParseError> {
+fn parse_term<'a>(tokens: &'a [Token<'a>], pos: usize) -> Result<(Expr<'a>, usize), ParseError> {
     let (mut expr, mut pos) = parse_factor(tokens, pos)?;
     loop {
         let op_token = tokens.get(pos).ok_or(ParseError::UnexpectedEndOfInput {
@@ -547,10 +538,7 @@ fn parse_term<'a>(tokens: &'a Vec<Token<'a>>, pos: usize) -> Result<(Expr<'a>, u
     Ok((expr, pos))
 }
 
-fn parse_factor<'a>(
-    tokens: &'a Vec<Token<'a>>,
-    pos: usize,
-) -> Result<(Expr<'a>, usize), ParseError> {
+fn parse_factor<'a>(tokens: &'a [Token<'a>], pos: usize) -> Result<(Expr<'a>, usize), ParseError> {
     let (mut expr, mut pos) = parse_unary(tokens, pos)?;
     loop {
         let op_token = tokens
@@ -570,10 +558,7 @@ fn parse_factor<'a>(
     Ok((expr, pos))
 }
 
-fn parse_unary<'a>(
-    tokens: &'a Vec<Token<'a>>,
-    pos: usize,
-) -> Result<(Expr<'a>, usize), ParseError> {
+fn parse_unary<'a>(tokens: &'a [Token<'a>], pos: usize) -> Result<(Expr<'a>, usize), ParseError> {
     let operator_token = tokens.get(pos).ok_or(ParseError::UnexpectedEndOfInput {
         expected: "unary operator",
     })?;
@@ -592,7 +577,7 @@ fn parse_unary<'a>(
     }
 }
 
-fn parse_call<'a>(tokens: &'a Vec<Token<'a>>, pos: usize) -> Result<(Expr<'a>, usize), ParseError> {
+fn parse_call<'a>(tokens: &'a [Token<'a>], pos: usize) -> Result<(Expr<'a>, usize), ParseError> {
     let (mut expr, mut pos) = parse_primary(tokens, pos)?;
     loop {
         match &tokens[pos].token_type {
@@ -608,7 +593,7 @@ fn parse_call<'a>(tokens: &'a Vec<Token<'a>>, pos: usize) -> Result<(Expr<'a>, u
 }
 
 fn parse_call_finish<'a>(
-    tokens: &'a Vec<Token<'a>>,
+    tokens: &'a [Token<'a>],
     pos: usize,
     callee: Expr<'a>,
 ) -> Result<(Expr<'a>, usize), ParseError<'a>> {
@@ -642,10 +627,7 @@ fn parse_call_finish<'a>(
     ))
 }
 
-fn parse_primary<'a>(
-    tokens: &'a Vec<Token<'a>>,
-    pos: usize,
-) -> Result<(Expr<'a>, usize), ParseError> {
+fn parse_primary<'a>(tokens: &'a [Token<'a>], pos: usize) -> Result<(Expr<'a>, usize), ParseError> {
     let token = tokens.get(pos).ok_or(ParseError::UnexpectedEndOfInput {
         expected: "literal",
     })?;
