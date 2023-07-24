@@ -24,8 +24,6 @@ use chunk::Chunk;
 
 use vm::VM;
 
-use crate::compiler::compile;
-
 fn main() -> Result<(), Box<dyn Error>> {
     let args = env::args().collect::<Vec<_>>();
     match &args[..] {
@@ -58,15 +56,15 @@ fn run_prompt() -> io::Result<()> {
         io::stdout().flush()?;
         let mut line = String::new();
         stdin.lock().read_line(&mut line)?;
-        if line.is_empty() {
-            break;
+        if line.trim().is_empty() {
+            continue;
         } else {
             match vm.run(&line, &mut chunk, true) {
                 Ok(_) => (),
                 Err(e) => {
                     vm.reset_stack();
                     print!("{}", e)
-                },
+                }
             };
             input_history.push(line);
         }

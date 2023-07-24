@@ -75,7 +75,7 @@ impl Chunk {
                 OpCode::Constant => {
                     let constant_index = self.code[offset + 1];
                     println!(
-                        "{:16} {constant_index} {:?}",
+                        "{:16} {constant_index} {}",
                         instruction, self.constants[constant_index as usize]
                     );
                     Some(offset + 2)
@@ -86,7 +86,7 @@ impl Chunk {
                     let l = self.code[offset + 3];
                     let constant_index = u32::from_be_bytes([0, h, m, l]);
                     println!(
-                        "{:16} {constant_index} {:?}",
+                        "{:16} {constant_index} {}",
                         instruction, self.constants[constant_index as usize]
                     );
                     Some(offset + 4)

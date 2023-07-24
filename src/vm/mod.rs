@@ -105,6 +105,28 @@ impl VM {
                     let as_bool: bool = (*last_ref).into();
                     *last_ref = Value::Boolean(!as_bool);
                 }
+                OpCode::Equal => {
+                    let (a, b) = Self::pop_twice_unsafe(&mut self.stack);
+                    self.stack.push((a == b).into())
+                }
+                OpCode::Greater => {
+                    let (a, b) = Self::pop_twice_unsafe(&mut self.stack);
+                    match (a, b) {
+                        (Value::Number(n1), Value::Number(n2)) => {
+                            self.stack.push(Value::Boolean(n1 > n2))
+                        }
+                        _ => return Err(RuntimeError::OperandsMustBeNumber),
+                    }
+                }
+                OpCode::Less => {
+                    let (a, b) = Self::pop_twice_unsafe(&mut self.stack);
+                    match (a, b) {
+                        (Value::Number(n1), Value::Number(n2)) => {
+                            self.stack.push(Value::Boolean(n1 < n2))
+                        }
+                        _ => return Err(RuntimeError::OperandsMustBeNumber),
+                    }
+                }
             }
         }
         Ok(0f64.into())

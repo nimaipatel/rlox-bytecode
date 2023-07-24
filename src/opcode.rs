@@ -15,6 +15,9 @@ pub enum OpCode {
     True,
     False,
     Not,
+    Equal,
+    Greater,
+    Less,
 }
 
 impl Display for OpCode {
@@ -32,6 +35,9 @@ impl Display for OpCode {
             OpCode::True => "OP_TRUE",
             OpCode::False => "OP_FALSE",
             OpCode::Not => "OP_NOT",
+            OpCode::Equal => "OP_EQUAL",
+            OpCode::Greater => "OP_GREATER",
+            OpCode::Less => "OP_LESS",
         };
         write!(f, "{}", string_rep)
     }

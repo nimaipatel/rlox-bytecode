@@ -1,4 +1,4 @@
-use std::fmt::{Debug, Display};
+use std::fmt::Debug;
 
 use crate::byte_string::ByteString;
 use crate::token_type::TokenType;

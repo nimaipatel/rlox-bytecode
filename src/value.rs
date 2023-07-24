@@ -1,8 +1,8 @@
 use crate::error::RuntimeError;
-use std::fmt::Display;
+use std::fmt::{write, Debug, Display};
 
 #[repr(C)]
-#[derive(Debug, Clone, Copy)]
+#[derive(Clone, Copy, PartialEq)]
 pub enum Value {
     Nil,
     Boolean(bool),
@@ -74,5 +74,11 @@ impl Display for Value {
             Value::Boolean(b) => write!(f, "{}", b),
             Value::Number(n) => write!(f, "{}", n),
         }
+    }
+}
+
+impl Debug for Value {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self)
     }
 }
