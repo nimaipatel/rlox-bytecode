@@ -18,7 +18,7 @@ fn emit_constant(chunk: &mut Chunk, value: Value, line: usize) {
 
 fn compile_expr<'a>(chunk: &mut Chunk, expr: &'a Expr<'a>) {
     match expr {
-        Expr::NumericLiteral(n) => emit_constant(chunk, *n, 0), // TODO: use the actual line number
+        Expr::NumericLiteral(n) => emit_constant(chunk, Value::Number(*n), 0), // TODO: use the actual line number
         Expr::Unary { op, expr } => {
             compile_expr(chunk, expr);
             match op.token_type {
@@ -38,6 +38,9 @@ fn compile_expr<'a>(chunk: &mut Chunk, expr: &'a Expr<'a>) {
             }
         }
         Expr::Grouping(expr) => compile_expr(chunk, expr),
+        Expr::NilLiteral => emit_byte(chunk, OpCode::Nil as u8, 0), // TODO: use actual line number
+        Expr::BoolLiteral(true) => emit_byte(chunk, OpCode::True as u8, 0), // TODO: use actual line number
+        Expr::BoolLiteral(false) => emit_byte(chunk, OpCode::False as u8, 0), // TODO: use actual line number
         _ => todo!(),
     }
 }

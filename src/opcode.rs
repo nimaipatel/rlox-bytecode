@@ -11,6 +11,9 @@ pub enum OpCode {
     Subtract,
     Multiply,
     Divide,
+    Nil,
+    True,
+    False,
 }
 
 impl Display for OpCode {
@@ -24,6 +27,9 @@ impl Display for OpCode {
             OpCode::Subtract => "OP_SUBTRACT",
             OpCode::Multiply => "OP_MULTIPLY",
             OpCode::Divide => "OP_DIVIDE",
+            OpCode::Nil => "OP_NIL",
+            OpCode::True => "OP_TRUE",
+            OpCode::False => "OP_FALSE",
         };
         write!(f, "{}", string_rep)
     }

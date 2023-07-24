@@ -1,11 +1,14 @@
 use std::{error::Error, fmt::Display};
 
 #[derive(Debug)]
-pub enum InterpretError {}
+pub enum RuntimeError {
+    OperandMustBeNumber,
+    OperandsMustBeNumber,
+}
 
-impl Error for InterpretError {}
+impl Error for RuntimeError {}
 
-impl Display for InterpretError {
+impl Display for RuntimeError {
     fn fmt(&self, _f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         todo!()
     }

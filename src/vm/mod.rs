@@ -2,7 +2,7 @@ mod test;
 
 use std::cell::Cell;
 
-use crate::{chunk::Chunk, error::InterpretError, opcode::OpCode, value::Value};
+use crate::{chunk::Chunk, error::RuntimeError, opcode::OpCode, value::Value};
 
 type Stack = Vec<Value>;
 type IP = usize;
@@ -48,7 +48,7 @@ impl VM {
         chunk.constants[idx as usize]
     }
 
-    pub fn run_bytecode(&mut self, chunk: &Chunk, debug: bool) -> Result<Value, InterpretError> {
+    pub fn run_bytecode(&mut self, chunk: &Chunk, debug: bool) -> Result<Value, RuntimeError> {
         while self.ip.get() < chunk.code.len() {
             if debug {
                 // TODO: make this compile time
@@ -76,27 +76,30 @@ impl VM {
                 }
                 OpCode::Negate => {
                     let last_ref = self.stack.last_mut().expect(STACK_UNDERFLOW);
-                    *last_ref = -*last_ref;
+                    *last_ref = last_ref.negate()?;
                 }
                 OpCode::Add => {
                     let (a, b) = Self::pop_twice_unsafe(&mut self.stack);
-                    self.stack.push(a + b);
+                    self.stack.push(a.add(b)?);
                 }
                 OpCode::Subtract => {
                     let (a, b) = Self::pop_twice_unsafe(&mut self.stack);
-                    self.stack.push(a - b);
+                    self.stack.push(a.subtract(b)?);
                 }
                 OpCode::Multiply => {
                     let (a, b) = Self::pop_twice_unsafe(&mut self.stack);
-                    self.stack.push(a * b);
+                    self.stack.push(a.multiply(b)?);
                 }
                 OpCode::Divide => {
                     let (a, b) = Self::pop_twice_unsafe(&mut self.stack);
-                    self.stack.push(a / b);
+                    self.stack.push(a.divide(b)?);
                 }
+                OpCode::Nil => self.stack.push(Value::Nil),
+                OpCode::True => self.stack.push(Value::Boolean(true)),
+                OpCode::False => self.stack.push(Value::Boolean(false)),
             }
         }
-        Ok(0f64)
+        Ok(0f64.into())
     }
 
     fn pop_unsafe(stack: &mut Stack) -> Value {
