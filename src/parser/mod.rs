@@ -474,9 +474,7 @@ fn parse_equality<'a>(
 ) -> Result<(Expr<'a>, usize), ParseError> {
     let (mut expr, mut pos) = parse_comp(tokens, pos)?;
     loop {
-        let comp_token = tokens.get(pos).ok_or(ParseError::UnexpectedEndOfInput {
-            expected: "equality",
-        })?;
+        let comp_token = &tokens[pos];
         if comp_token.token_type != TokenType::EqualEqual
             && comp_token.token_type != TokenType::BangEqual
         {
@@ -496,9 +494,7 @@ fn parse_equality<'a>(
 fn parse_comp<'a>(tokens: &'a [Token<'a>], pos: usize) -> Result<(Expr<'a>, usize), ParseError> {
     let (mut expr, mut pos) = parse_term(tokens, pos)?;
     loop {
-        let comp_token = tokens.get(pos).ok_or(ParseError::UnexpectedEndOfInput {
-            expected: "comparision",
-        })?;
+        let comp_token = &tokens[pos];
         if comp_token.token_type != TokenType::Greater
             && comp_token.token_type != TokenType::GreaterEqual
             && comp_token.token_type != TokenType::Less
@@ -520,9 +516,7 @@ fn parse_comp<'a>(tokens: &'a [Token<'a>], pos: usize) -> Result<(Expr<'a>, usiz
 fn parse_term<'a>(tokens: &'a [Token<'a>], pos: usize) -> Result<(Expr<'a>, usize), ParseError> {
     let (mut expr, mut pos) = parse_factor(tokens, pos)?;
     loop {
-        let op_token = tokens.get(pos).ok_or(ParseError::UnexpectedEndOfInput {
-            expected: "term operator",
-        })?;
+        let op_token = &tokens[pos];
         if op_token.token_type != TokenType::Plus && op_token.token_type != TokenType::Minus {
             break;
         }
@@ -540,9 +534,7 @@ fn parse_term<'a>(tokens: &'a [Token<'a>], pos: usize) -> Result<(Expr<'a>, usiz
 fn parse_factor<'a>(tokens: &'a [Token<'a>], pos: usize) -> Result<(Expr<'a>, usize), ParseError> {
     let (mut expr, mut pos) = parse_unary(tokens, pos)?;
     loop {
-        let op_token = tokens
-            .get(pos)
-            .ok_or(ParseError::UnexpectedEndOfInput { expected: "factor" })?;
+        let op_token = &tokens[pos];
         if op_token.token_type != TokenType::Star && op_token.token_type != TokenType::Slash {
             break;
         }
@@ -558,9 +550,7 @@ fn parse_factor<'a>(tokens: &'a [Token<'a>], pos: usize) -> Result<(Expr<'a>, us
 }
 
 fn parse_unary<'a>(tokens: &'a [Token<'a>], pos: usize) -> Result<(Expr<'a>, usize), ParseError> {
-    let operator_token = tokens.get(pos).ok_or(ParseError::UnexpectedEndOfInput {
-        expected: "unary operator",
-    })?;
+    let operator_token = &tokens[pos];
     match &operator_token.token_type {
         TokenType::Bang | TokenType::Minus => {
             let (right, pos) = parse_unary(tokens, pos + 1)?;
@@ -626,9 +616,7 @@ fn parse_call_finish<'a>(
 }
 
 fn parse_primary<'a>(tokens: &'a [Token<'a>], pos: usize) -> Result<(Expr<'a>, usize), ParseError> {
-    let token = tokens.get(pos).ok_or(ParseError::UnexpectedEndOfInput {
-        expected: "literal",
-    })?;
+    let token = &tokens[pos];
     match &token.token_type {
         TokenType::False => Ok((Expr::BoolLiteral(false), pos + 1)),
         TokenType::True => Ok((Expr::BoolLiteral(true), pos + 1)),
