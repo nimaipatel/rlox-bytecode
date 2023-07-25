@@ -1,6 +1,6 @@
 mod test;
 
-use std::cell::Cell;
+use std::{cell::Cell, f32::consts::E};
 
 use crate::{
     chunk::Chunk, compiler::compile, error::RuntimeError, opcode::OpCode, parser::parse_expression,
@@ -79,23 +79,46 @@ impl VM {
                 }
                 OpCode::Negate => {
                     let last_ref = self.stack.last_mut().expect(STACK_UNDERFLOW);
-                    *last_ref = last_ref.negate()?;
+                    match last_ref {
+                        Value::Number(n) => *n = -*n,
+                        _ => return Err(RuntimeError::OperandMustBeNumber),
+                    }
                 }
                 OpCode::Add => {
                     let (a, b) = Self::pop_twice_unsafe(&mut self.stack);
-                    self.stack.push(a.add(b)?);
+                    match (a, b) {
+                        (Value::Number(a), Value::Number(b)) => {
+                            self.stack.push(Value::Number(a + b))
+                        }
+                        _ => return Err(RuntimeError::OperandsMustBeNumber),
+                    }
                 }
                 OpCode::Subtract => {
                     let (a, b) = Self::pop_twice_unsafe(&mut self.stack);
-                    self.stack.push(a.subtract(b)?);
+                    match (a, b) {
+                        (Value::Number(a), Value::Number(b)) => {
+                            self.stack.push(Value::Number(a - b))
+                        }
+                        _ => return Err(RuntimeError::OperandsMustBeNumber),
+                    }
                 }
                 OpCode::Multiply => {
                     let (a, b) = Self::pop_twice_unsafe(&mut self.stack);
-                    self.stack.push(a.multiply(b)?);
+                    match (a, b) {
+                        (Value::Number(a), Value::Number(b)) => {
+                            self.stack.push(Value::Number(a * b))
+                        }
+                        _ => return Err(RuntimeError::OperandsMustBeNumber),
+                    }
                 }
                 OpCode::Divide => {
                     let (a, b) = Self::pop_twice_unsafe(&mut self.stack);
-                    self.stack.push(a.divide(b)?);
+                    match (a, b) {
+                        (Value::Number(a), Value::Number(b)) => {
+                            self.stack.push(Value::Number(a / b))
+                        }
+                        _ => return Err(RuntimeError::OperandsMustBeNumber),
+                    }
                 }
                 OpCode::Nil => self.stack.push(Value::Nil),
                 OpCode::True => self.stack.push(Value::Boolean(true)),

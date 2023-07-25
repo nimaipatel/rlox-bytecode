@@ -37,34 +37,6 @@ impl Value {
             _ => Err(RuntimeError::OperandMustBeNumber),
         }
     }
-
-    pub fn add(&self, other: Self) -> Result<Self, RuntimeError> {
-        match (self, other) {
-            (Value::Number(n1), Value::Number(n2)) => Ok(Value::Number(n1 + n2)),
-            _ => Err(RuntimeError::OperandsMustBeNumber),
-        }
-    }
-
-    pub fn subtract(&self, other: Self) -> Result<Self, RuntimeError> {
-        match (self, other) {
-            (Value::Number(n1), Value::Number(n2)) => Ok(Value::Number(n1 - n2)),
-            _ => Err(RuntimeError::OperandsMustBeNumber),
-        }
-    }
-
-    pub fn multiply(&self, other: Self) -> Result<Self, RuntimeError> {
-        match (self, other) {
-            (Value::Number(n1), Value::Number(n2)) => Ok(Value::Number(n1 * n2)),
-            _ => Err(RuntimeError::OperandsMustBeNumber),
-        }
-    }
-
-    pub fn divide(&self, other: Self) -> Result<Self, RuntimeError> {
-        match (self, other) {
-            (Value::Number(n1), Value::Number(n2)) => Ok(Value::Number(n1 / n2)),
-            _ => Err(RuntimeError::OperandsMustBeNumber),
-        }
-    }
 }
 
 impl Display for Value {
