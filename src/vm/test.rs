@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use crate::{chunk::Chunk, opcode::OpCode, vm::VM};
+    use crate::{chunk::Chunk, opcode::OpCode, value::Value, vm::VM};
 
     #[test]
     fn test_binary_ops() {
@@ -14,7 +14,7 @@ mod tests {
         chunk.write(OpCode::Negate as u8, 123);
         chunk.write(OpCode::Return as u8, 123);
         let ret = vm.run_bytecode(&chunk, false).unwrap();
-        assert_eq!(ret, -0.8214285714285714f64);
+        assert_eq!(ret, Value::Number(-0.8214285714285714f64));
     }
 
     #[test]
@@ -26,7 +26,7 @@ mod tests {
         chunk.write(OpCode::Divide as u8, 123);
         chunk.write(OpCode::Return as u8, 123);
         let ret = vm.run_bytecode(&chunk, false).unwrap();
-        assert_eq!(ret, -0.5f64);
+        assert_eq!(ret, Value::Number(-0.5f64));
     }
 
     #[test]
@@ -38,7 +38,7 @@ mod tests {
         chunk.write(OpCode::Subtract as u8, 123);
         chunk.write(OpCode::Return as u8, 123);
         let ret = vm.run_bytecode(&chunk, false).unwrap();
-        assert_eq!(ret, 90f64);
+        assert_eq!(ret, Value::Number(90f64));
     }
 
     #[test]
@@ -49,6 +49,6 @@ mod tests {
         chunk.write_constant(10f64.into(), 123);
         chunk.write(OpCode::Subtract as u8, 123);
         vm.run_bytecode(&chunk, false).unwrap();
-        assert_eq!(vm.stack.last().unwrap(), &90f64);
+        assert_eq!(vm.stack.last().unwrap(), &Value::Number(90f64));
     }
 }
