@@ -273,7 +273,7 @@ fn parse_for_statement<'a>(
         }
     } else {
         body = Stmt::While {
-            condition: Expr::BoolLiteral(true),
+            condition: Expr::TrueLiteral,
             body: Box::new(body),
         }
     }
@@ -618,14 +618,11 @@ fn parse_call_finish<'a>(
 fn parse_primary<'a>(tokens: &'a [Token<'a>], pos: usize) -> Result<(Expr<'a>, usize), ParseError> {
     let token = &tokens[pos];
     match &token.token_type {
-        TokenType::False => Ok((Expr::BoolLiteral(false), pos + 1)),
-        TokenType::True => Ok((Expr::BoolLiteral(true), pos + 1)),
+        TokenType::False => Ok((Expr::FalseLiteral, pos + 1)),
+        TokenType::True => Ok((Expr::TrueLiteral, pos + 1)),
         TokenType::Nil => Ok((Expr::NilLiteral, pos + 1)),
 
-        TokenType::Number => Ok((
-            Expr::NumericLiteral(str::from_utf8(token.lexeme).unwrap().parse().unwrap()),
-            pos + 1,
-        )),
+        TokenType::Number => Ok((Expr::NumericLiteral(token.lexeme), pos + 1)),
         TokenType::String => Ok((Expr::StringLiteral(token.lexeme), pos + 1)),
 
         TokenType::LeftParen => {

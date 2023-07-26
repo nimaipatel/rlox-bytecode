@@ -3,8 +3,9 @@ use crate::{byte_string::ByteSlice, token::Token};
 #[derive(Debug, PartialEq)]
 pub enum Expr<'a> {
     StringLiteral(&'a ByteSlice),
-    NumericLiteral(f64), // TODO: make this store bytestring only
-    BoolLiteral(bool),   // TODO: make two seperate literals for true and false
+    NumericLiteral(&'a ByteSlice),
+    TrueLiteral,
+    FalseLiteral,
     NilLiteral,
     Logical {
         left: Box<Expr<'a>>,

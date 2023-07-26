@@ -4,6 +4,7 @@ use crate::expr::Expr;
 use crate::opcode::OpCode;
 use crate::token_type::TokenType;
 use crate::value::Value;
+use std::str;
 
 fn emit_byte(chunk: &mut Chunk, byte: Byte, line: usize) {
     chunk.write(byte, line);
@@ -20,7 +21,11 @@ fn emit_constant(chunk: &mut Chunk, value: Value, line: usize) {
 
 fn compile_expr<'a>(chunk: &mut Chunk, expr: &'a Expr<'a>) {
     match expr {
-        Expr::NumericLiteral(n) => emit_constant(chunk, Value::Number(*n), 0), // TODO: use the actual line number
+        Expr::NumericLiteral(n) => emit_constant(
+            chunk,
+            Value::Number(unsafe { str::from_utf8_unchecked(*n) }.parse().unwrap()),
+            0,
+        ), // TODO: use the actual line number
         Expr::Unary { op, expr } => {
             compile_expr(chunk, expr);
             match op.token_type {
@@ -54,8 +59,8 @@ fn compile_expr<'a>(chunk: &mut Chunk, expr: &'a Expr<'a>) {
         }
         Expr::Grouping(expr) => compile_expr(chunk, expr),
         Expr::NilLiteral => emit_byte(chunk, OpCode::Nil as u8, 0), // TODO: use actual line number
-        Expr::BoolLiteral(true) => emit_byte(chunk, OpCode::True as u8, 0), // TODO: use actual line number
-        Expr::BoolLiteral(false) => emit_byte(chunk, OpCode::False as u8, 0), // TODO: use actual line number
+        Expr::TrueLiteral => emit_byte(chunk, OpCode::True as u8, 0), // TODO: use actual line number
+        Expr::FalseLiteral => emit_byte(chunk, OpCode::False as u8, 0), // TODO: use actual line number
         Expr::StringLiteral(bytestring) => {
             let bytestring = &bytestring[1..bytestring.len() - 1];
             let ptr = bytestring.into();
