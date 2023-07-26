@@ -2,7 +2,7 @@ mod scan_error;
 use std::cell::RefCell;
 
 use crate::{
-    byte_string::{Byte, ByteString},
+    byte_string::{Byte, ByteSlice},
     token::Token,
     token_type::{string_to_keyword, TokenType},
 };
@@ -10,7 +10,7 @@ use crate::{
 use self::scan_error::ScanError;
 
 pub struct Scanner<'a> {
-    bytes: &'a ByteString,
+    bytes: &'a ByteSlice,
     start: usize,
     current: RefCell<usize>,
     line: RefCell<usize>,
@@ -21,7 +21,7 @@ fn is_alpha(byte: Byte) -> bool {
 }
 
 impl<'a> Scanner<'a> {
-    pub fn new(bytes: &'a ByteString) -> Self {
+    pub fn new(bytes: &'a ByteSlice) -> Self {
         Self {
             bytes,
             start: 0,

@@ -1,4 +1,4 @@
-use crate::byte_string::ByteString;
+use crate::byte_string::ByteSlice;
 
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub enum TokenType {
@@ -51,7 +51,7 @@ pub enum TokenType {
     Eof,
 }
 
-pub fn string_to_keyword(string: &ByteString) -> Option<TokenType> {
+pub fn string_to_keyword(string: &ByteSlice) -> Option<TokenType> {
     match string {
         b"and" => Some(TokenType::And),
         b"class" => Some(TokenType::Class),

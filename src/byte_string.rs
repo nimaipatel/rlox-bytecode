@@ -1,2 +1,3 @@
 pub type Byte = u8;
-pub type ByteString = [Byte];
+pub type ByteSlice = [Byte];
+pub type ByteVector = Vec<Byte>;

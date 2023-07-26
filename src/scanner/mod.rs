@@ -2,14 +2,14 @@ mod scan_error;
 mod tests;
 
 use crate::{
-    byte_string::ByteString,
+    byte_string::ByteSlice,
     token::Token,
     token_type::{string_to_keyword, TokenType},
 };
 
 use self::scan_error::ScanError;
 
-pub fn scan(src: &'_ ByteString) -> Result<Vec<Token<'_>>, ScanError> {
+pub fn scan(src: &'_ ByteSlice) -> Result<Vec<Token<'_>>, ScanError> {
     let mut line = 1;
     let mut tokens = Vec::new();
     let mut chars = src.iter().enumerate().peekable();

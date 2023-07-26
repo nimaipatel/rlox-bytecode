@@ -1,12 +1,12 @@
 use std::fmt::Debug;
 
-use crate::byte_string::ByteString;
+use crate::byte_string::ByteSlice;
 use crate::token_type::TokenType;
 
 #[derive(Clone, Copy, PartialEq)]
 pub struct Token<'a> {
     pub token_type: TokenType,
-    pub lexeme: &'a ByteString,
+    pub lexeme: &'a ByteSlice,
     pub line: usize,
 }
 
@@ -25,7 +25,7 @@ impl Debug for Token<'_> {
 }
 
 impl<'a> Token<'a> {
-    pub fn new(token_type: TokenType, lexeme: &'a ByteString, line: usize) -> Self {
+    pub fn new(token_type: TokenType, lexeme: &'a ByteSlice, line: usize) -> Self {
         Self {
             token_type,
             lexeme,

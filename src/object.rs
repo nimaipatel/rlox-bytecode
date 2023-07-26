@@ -3,21 +3,21 @@ use std::{
     ptr::NonNull,
 };
 
-use crate::byte_string::{self, Byte, ByteString};
+use crate::byte_string::{self, Byte, ByteSlice, ByteVector};
 
 // TODO: Need to GC these
 #[repr(C)]
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct ObjPtr(NonNull<Obj>);
 
-impl From<&ByteString> for ObjPtr {
-    fn from(byte_string: &ByteString) -> Self {
+impl From<&ByteSlice> for ObjPtr {
+    fn from(byte_string: &ByteSlice) -> Self {
         Obj::String(byte_string.into()).to_obj_ptr()
     }
 }
 
-impl From<Vec<Byte>> for ObjPtr {
-    fn from(byte_string: Vec<Byte>) -> Self {
+impl From<ByteVector> for ObjPtr {
+    fn from(byte_string: ByteVector) -> Self {
         Obj::String(byte_string).to_obj_ptr()
     }
 }
@@ -34,7 +34,7 @@ impl Obj {
 #[repr(C)]
 #[derive(Debug, Clone)]
 pub enum Obj {
-    String(Vec<Byte>),
+    String(ByteVector),
 }
 
 impl Display for Obj {
@@ -62,7 +62,7 @@ impl ObjPtr {
         }
     }
 
-    pub fn into_string(&self) -> &ByteString {
+    pub fn into_string(&self) -> &ByteSlice {
         let derefed_obj = unsafe { &(*self.0.as_ptr()) };
         match derefed_obj {
             Obj::String(byte_string) => byte_string,
