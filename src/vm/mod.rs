@@ -80,14 +80,14 @@ impl VM {
                 OpCode::Constant => {
                     let constant = self.read_constant(chunk);
                     if let Value::ObjPtr(ptr) = constant {
-                        self.objects.push_back(ptr);
+                        self.objects.push_back(ptr); // TODO: abstract this
                     }
                     self.stack.push(constant);
                 }
                 OpCode::ConstantLong => {
                     let constant = self.read_constant_long(chunk);
                     if let Value::ObjPtr(ptr) = constant {
-                        self.objects.push_back(ptr);
+                        self.objects.push_back(ptr); // TODO: abstract this
                     }
                     self.stack.push(constant);
                 }
@@ -107,7 +107,7 @@ impl VM {
                         (Value::ObjPtr(a), Value::ObjPtr(b)) if a.is_string() && b.is_string() => {
                             let concat = [a.into_string(), b.into_string()].concat();
                             let ptr = concat.into();
-                            self.objects.push_back(ptr);
+                            self.objects.push_back(ptr); // TODO: abstract this
                             self.stack.push(Value::ObjPtr(ptr))
                         }
                         _ => return Err(RuntimeError::OperandsMustBeNumber),
