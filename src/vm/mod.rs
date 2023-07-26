@@ -1,10 +1,10 @@
 mod test;
 
+use std::cell::Cell;
 use std::collections::LinkedList;
 use std::str;
-use std::{cell::Cell, f32::consts::E};
 
-use crate::object::{Obj, ObjPtr};
+use crate::object::ObjPtr;
 use crate::{
     chunk::Chunk, compiler::compile, error::RuntimeError, opcode::OpCode, parser::parse_expression,
     scanner::scan, value::Value,

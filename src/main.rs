@@ -4,6 +4,7 @@ mod compiler;
 mod error;
 mod expr;
 mod lazy_scanner;
+mod object;
 mod opcode;
 mod parser;
 mod scanner;
@@ -12,7 +13,6 @@ mod token;
 mod token_type;
 mod value;
 mod vm;
-mod object;
 
 use std::{
     env,

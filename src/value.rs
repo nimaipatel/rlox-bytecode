@@ -1,5 +1,5 @@
-use crate::{error::RuntimeError, object::ObjPtr};
-use std::fmt::{write, Debug, Display};
+use crate::object::ObjPtr;
+use std::fmt::{Debug, Display};
 
 #[repr(C)]
 #[derive(Debug, Clone, Copy, PartialEq)]

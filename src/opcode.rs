@@ -1,4 +1,4 @@
-use std::fmt::{Display, Debug};
+use std::fmt::Debug;
 
 #[repr(u8)]
 #[derive(Clone, Copy)]

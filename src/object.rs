@@ -1,9 +1,6 @@
-use std::{
-    fmt::{write, Display},
-    ptr::NonNull,
-};
+use std::{fmt::Display, ptr::NonNull};
 
-use crate::byte_string::{self, Byte, ByteSlice, ByteVector};
+use crate::byte_string::{ByteSlice, ByteVector};
 
 // TODO: Need to GC these
 #[repr(C)]
