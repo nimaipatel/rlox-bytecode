@@ -1,12 +1,13 @@
-use crate::error::RuntimeError;
+use crate::{error::RuntimeError, object::ObjPtr};
 use std::fmt::{write, Debug, Display};
 
 #[repr(C)]
-#[derive(Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub enum Value {
     Nil,
     Boolean(bool),
     Number(f64),
+    ObjPtr(ObjPtr), // heap allocated object
 }
 
 impl From<f64> for Value {
@@ -30,27 +31,13 @@ impl Into<bool> for Value {
     }
 }
 
-impl Value {
-    pub fn negate(&self) -> Result<Self, RuntimeError> {
-        match self {
-            Value::Number(n) => Ok(Value::Number(-n)),
-            _ => Err(RuntimeError::OperandMustBeNumber),
-        }
-    }
-}
-
 impl Display for Value {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Value::Nil => write!(f, "nil"),
             Value::Boolean(b) => write!(f, "{}", b),
             Value::Number(n) => write!(f, "{}", n),
+            Value::ObjPtr(o) => write!(f, "{}", o),
         }
-    }
-}
-
-impl Debug for Value {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self)
     }
 }

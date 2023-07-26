@@ -12,6 +12,7 @@ mod token;
 mod token_type;
 mod value;
 mod vm;
+mod object;
 
 use std::{
     env,

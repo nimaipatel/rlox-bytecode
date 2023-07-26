@@ -1,3 +1,5 @@
+use std::ptr::NonNull;
+
 use crate::byte_string::Byte;
 use crate::chunk::Chunk;
 use crate::expr::Expr;
@@ -56,6 +58,15 @@ fn compile_expr<'a>(chunk: &mut Chunk, expr: &'a Expr<'a>) {
         Expr::NilLiteral => emit_byte(chunk, OpCode::Nil as u8, 0), // TODO: use actual line number
         Expr::BoolLiteral(true) => emit_byte(chunk, OpCode::True as u8, 0), // TODO: use actual line number
         Expr::BoolLiteral(false) => emit_byte(chunk, OpCode::False as u8, 0), // TODO: use actual line number
+        Expr::StringLiteral(bytestring) => {
+            let bytestring = &bytestring[1..bytestring.len() - 1];
+            let ptr = bytestring.into();
+            emit_constant(
+                chunk,
+                Value::ObjPtr(ptr),
+                0, // TODO: use actual line number
+            )
+        }
         _ => todo!(),
     }
 }

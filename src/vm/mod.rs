@@ -1,7 +1,10 @@
 mod test;
 
+use std::collections::LinkedList;
+use std::str;
 use std::{cell::Cell, f32::consts::E};
 
+use crate::object::{Obj, ObjPtr};
 use crate::{
     chunk::Chunk, compiler::compile, error::RuntimeError, opcode::OpCode, parser::parse_expression,
     scanner::scan, value::Value,
@@ -17,6 +20,7 @@ pub struct VM {
     // pub chunk: RefCell<Chunk>,
     ip: Cell<IP>,
     stack: Stack,
+    objects: LinkedList<ObjPtr>,
 }
 
 impl VM {
@@ -25,6 +29,7 @@ impl VM {
             // chunk: RefCell::new(Chunk::default()),
             ip: Cell::new(0),
             stack: Vec::with_capacity(256),
+            objects: LinkedList::new(),
         }
     }
 
@@ -58,6 +63,9 @@ impl VM {
                 print!("[TRACE] ");
                 print!("          ");
                 print!("stack: {:?}", self.stack);
+                print!("  ");
+                print!("objects: {:?}", self.objects);
+                println!();
                 println!();
                 print!("[TRACE] ");
                 chunk.disassemble_instruction(self.ip.get());
@@ -71,10 +79,16 @@ impl VM {
                 }
                 OpCode::Constant => {
                     let constant = self.read_constant(chunk);
+                    if let Value::ObjPtr(ptr) = constant {
+                        self.objects.push_back(ptr);
+                    }
                     self.stack.push(constant);
                 }
                 OpCode::ConstantLong => {
                     let constant = self.read_constant_long(chunk);
+                    if let Value::ObjPtr(ptr) = constant {
+                        self.objects.push_back(ptr);
+                    }
                     self.stack.push(constant);
                 }
                 OpCode::Negate => {
@@ -89,6 +103,12 @@ impl VM {
                     match (a, b) {
                         (Value::Number(a), Value::Number(b)) => {
                             self.stack.push(Value::Number(a + b))
+                        }
+                        (Value::ObjPtr(a), Value::ObjPtr(b)) if a.is_string() && b.is_string() => {
+                            let concat = [a.into_string(), b.into_string()].concat();
+                            let ptr = concat.into();
+                            self.objects.push_back(ptr);
+                            self.stack.push(Value::ObjPtr(ptr))
                         }
                         _ => return Err(RuntimeError::OperandsMustBeNumber),
                     }
