@@ -1,7 +1,7 @@
-use std::fmt::Display;
+use std::fmt::{Display, Debug};
 
 #[repr(u8)]
-#[derive(Debug, Clone, Copy)]
+#[derive(Clone, Copy)]
 pub enum OpCode {
     Return,
     Constant,
@@ -20,7 +20,7 @@ pub enum OpCode {
     Less,
 }
 
-impl Display for OpCode {
+impl Debug for OpCode {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let string_rep = match self {
             OpCode::Return => "OP_RETURN",
@@ -39,7 +39,7 @@ impl Display for OpCode {
             OpCode::Greater => "OP_GREATER",
             OpCode::Less => "OP_LESS",
         };
-        write!(f, "{}", string_rep)
+        write!(f, "{:16}", string_rep)
     }
 }
 
